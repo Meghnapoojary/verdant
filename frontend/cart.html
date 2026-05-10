@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Verdant — Your Cart</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700;900&family=Nunito:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<style>
+  :root{--bg:#f5f0e8;--surface:#faf7f2;--card:#fff9f0;--accent:#c17f3e;--clay:#d4956a;--text:#2c2416;--muted:#8a7a65;--border:#e2d8cc;--low:#7c9e6b;--med:#c17f3e;--high:#b85c4a;--warm1:#e8ddd0;--warm2:#f0e8dc;--gold:#c17f3e;}
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{background:var(--bg);font-family:'Nunito',sans-serif;color:var(--text);min-height:100vh;}
+
+  nav{position:sticky;top:0;z-index:100;background:rgba(245,240,232,.92);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);padding:0 32px;display:flex;align-items:center;gap:16px;height:64px;box-shadow:0 1px 0 var(--border);}
+  .nav-brand{font-family:'Playfair Display',serif;font-size:22px;font-weight:900;text-decoration:none;color:var(--accent);display:flex;align-items:center;gap:8px;letter-spacing:-.3px;}
+  .nav-brand .icon{width:34px;height:34px;background:linear-gradient(135deg,var(--accent),var(--clay));border-radius:9px;display:grid;place-items:center;font-size:17px;box-shadow:0 2px 8px rgba(193,127,62,.3);}
+  .back-btn{background:var(--card);border:1.5px solid var(--border);border-radius:10px;padding:8px 16px;font-size:14px;cursor:pointer;color:var(--text);text-decoration:none;transition:border-color .2s;margin-left:auto;font-weight:600;}
+  .back-btn:hover{border-color:var(--accent);}
+
+  .page{display:grid;grid-template-columns:1fr 360px;gap:28px;padding:36px 32px;max-width:1200px;margin:0 auto;}
+  .page-title{font-family:'Playfair Display',serif;font-size:26px;font-weight:900;margin-bottom:20px;color:var(--text);}
+
+  .cart-item{background:var(--card);border:1.5px solid var(--border);border-radius:16px;padding:18px;display:grid;grid-template-columns:80px 1fr auto;gap:18px;align-items:center;margin-bottom:14px;transition:border-color .2s;}
+  .cart-item:hover{border-color:var(--warm1);}
+  .item-img{width:80px;height:80px;border-radius:10px;object-fit:cover;background:var(--warm1);}
+  .item-img-placeholder{width:80px;height:80px;border-radius:10px;background:var(--warm1);display:grid;place-items:center;font-size:28px;}
+  .item-name{font-family:'Playfair Display',serif;font-size:15px;font-weight:700;margin-bottom:3px;color:var(--text);}
+  .item-seller{font-size:12px;color:var(--muted);margin-bottom:8px;}
+  .item-trust{display:flex;gap:8px;align-items:center;}
+  .trust-pill{padding:3px 10px;border-radius:100px;font-size:11px;font-weight:700;}
+  .low{background:rgba(124,158,107,.12);color:var(--low);border:1px solid rgba(124,158,107,.3);}
+  .medium{background:rgba(193,127,62,.12);color:var(--med);border:1px solid rgba(193,127,62,.3);}
+  .high{background:rgba(184,92,74,.12);color:var(--high);border:1px solid rgba(184,92,74,.3);}
+  .item-price{font-family:'Playfair Display',serif;font-size:18px;font-weight:700;color:var(--accent);}
+  .remove-btn{background:none;border:none;color:var(--muted);font-size:18px;cursor:pointer;padding:4px;border-radius:6px;transition:color .2s;}
+  .remove-btn:hover{color:var(--high);}
+
+  .order-summary{background:var(--card);border:1.5px solid var(--border);border-radius:16px;padding:26px;position:sticky;top:80px;height:fit-content;box-shadow:0 4px 20px rgba(44,36,22,.04);}
+  .summary-title{font-family:'Playfair Display',serif;font-size:18px;font-weight:700;margin-bottom:18px;color:var(--text);}
+  .summary-row{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--border);font-size:14px;font-weight:500;}
+  .summary-row:last-of-type{border-bottom:none;}
+  .summary-row.total{font-family:'Playfair Display',serif;font-size:18px;font-weight:700;padding-top:14px;}
+  .summary-row.total .val{color:var(--accent);}
+  .checkout-btn{width:100%;margin-top:18px;background:linear-gradient(135deg,var(--accent),var(--clay));border:none;border-radius:12px;padding:15px;font-size:15px;font-weight:700;font-family:'Nunito',sans-serif;color:#fff;cursor:pointer;transition:transform .15s,box-shadow .2s;box-shadow:0 4px 16px rgba(193,127,62,.3);}
+  .checkout-btn:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(193,127,62,.4);}
+  .checkout-btn:disabled{opacity:.4;cursor:not-allowed;transform:none;}
+  .trust-warning{background:rgba(193,127,62,.08);border:1px solid rgba(193,127,62,.2);border-radius:10px;padding:12px 16px;font-size:13px;color:var(--med);margin-top:16px;line-height:1.6;display:none;}
+  .cart-help{background:linear-gradient(135deg,rgba(124,158,107,.06),rgba(193,127,62,.04));border:1px solid var(--border);border-radius:10px;padding:12px 16px;font-size:12px;color:var(--muted);line-height:1.6;margin-top:14px;}
+  .cart-help strong{color:var(--text);}
+
+  .empty-cart{grid-column:1/-1;text-align:center;padding:100px 20px;color:var(--muted);}
+  .empty-cart .icon{font-size:64px;margin-bottom:20px;}
+  .empty-cart h2{font-family:'Playfair Display',serif;font-size:24px;font-weight:700;margin-bottom:8px;color:var(--text);}
+  .empty-cart a{color:var(--accent);text-decoration:none;}
+
+  .modal-overlay{position:fixed;inset:0;background:rgba(44,36,22,.55);backdrop-filter:blur(8px);z-index:999;display:none;place-items:center;}
+  .modal-overlay.show{display:grid;}
+  .modal{background:var(--card);border:1.5px solid var(--border);border-radius:20px;padding:40px;max-width:420px;width:90%;text-align:center;box-shadow:0 20px 60px rgba(44,36,22,.15);}
+  .modal .icon{font-size:52px;margin-bottom:14px;}
+  .modal h2{font-family:'Playfair Display',serif;font-size:24px;font-weight:900;margin-bottom:8px;color:var(--text);}
+  .modal p{color:var(--muted);font-size:15px;margin-bottom:20px;line-height:1.6;}
+  .modal-order-id{background:var(--warm2);border:1.5px solid var(--border);border-radius:10px;padding:12px;font-family:'Playfair Display',serif;font-size:20px;font-weight:700;color:var(--accent);margin-bottom:22px;}
+  .modal-btn{background:linear-gradient(135deg,var(--accent),var(--clay));border:none;border-radius:12px;padding:14px 28px;font-size:15px;font-weight:700;font-family:'Nunito',sans-serif;color:#fff;cursor:pointer;box-shadow:0 4px 16px rgba(193,127,62,.3);}
+</style>
+</head>
+<body>
+
+<nav>
+  <a class="nav-brand" href="marketplace.html"><div class="icon">🌿</div>Verdant</a>
+  <a class="back-btn" href="marketplace.html">← Continue Shopping</a>
+</nav>
+
+<div class="page" id="pageContent"></div>
+
+<div class="modal-overlay" id="successModal">
+  <div class="modal">
+    <div class="icon">🎉</div>
+    <h2>Order Placed!</h2>
+    <p>Your order is confirmed. Thank you for shopping smart with Verdant!</p>
+    <div class="modal-order-id" id="orderId">#VD000000</div>
+    <button class="modal-btn" onclick="window.location.href='marketplace.html'">Back to Marketplace</button>
+  </div>
+</div>
+
+<script>
+const API='http://localhost:5000';
+function getCart(){return JSON.parse(localStorage.getItem('tm_cart')||'[]');}
+function saveCart(c){localStorage.setItem('tm_cart',JSON.stringify(c));}
+function removeItem(idx){const cart=getCart();cart.splice(idx,1);saveCart(cart);render();}
+
+function render(){
+  const cart=getCart();
+  const page=document.getElementById('pageContent');
+  if(!cart.length){
+    page.innerHTML=`<div class="empty-cart"><div class="icon">🛒</div><h2>Your cart is empty</h2><p style="margin-bottom:20px">Discover trust-verified products in our marketplace.</p><a href="marketplace.html" style="background:linear-gradient(135deg,var(--accent),var(--clay));color:#fff;padding:12px 24px;border-radius:10px;text-decoration:none;font-weight:700;font-family:'Nunito',sans-serif">Browse Products →</a></div>`;
+    return;
+  }
+  const subtotal=cart.reduce((a,i)=>a+i.price,0);
+  const shipping=subtotal>50000?0:99;
+  const total=subtotal+shipping;
+  const hasRisk=cart.some(i=>i.risk_level!=='Low Risk');
+  const riskClass=r=>r==='Low Risk'?'low':r==='Medium Risk'?'medium':'high';
+  page.innerHTML=`
+    <div>
+      <div class="page-title">🛒 Your Cart <span style="font-size:15px;color:var(--muted);font-weight:400;font-family:'Nunito',sans-serif">(${cart.length} item${cart.length!==1?'s':''})</span></div>
+      ${cart.map((item,i)=>`
+        <div class="cart-item">
+          <img class="item-img" src="${item.product_img||''}" onerror="this.style.display='none';this.nextElementSibling.style.display='grid'"/>
+          <div class="item-img-placeholder" style="display:none">📦</div>
+          <div>
+            <div class="item-name">${item.product_name}</div>
+            <div class="item-seller">Sold by: ${item.seller_name}</div>
+            <div class="item-trust">
+              <span class="trust-pill ${riskClass(item.risk_level)}">${item.risk_level}</span>
+              <span style="font-size:12px;color:var(--muted)">Trust Score: ${(item.trust_score*100).toFixed(0)}%</span>
+            </div>
+          </div>
+          <div style="display:flex;flex-direction:column;align-items:flex-end;gap:8px">
+            <div class="item-price">₹${item.price.toLocaleString('en-IN')}</div>
+            <button class="remove-btn" onclick="removeItem(${i})">🗑</button>
+          </div>
+        </div>
+      `).join('')}
+    </div>
+    <div>
+      <div class="order-summary">
+        <div class="summary-title">Order Summary</div>
+        <div class="summary-row"><span>Subtotal</span><span>₹${subtotal.toLocaleString('en-IN')}</span></div>
+        <div class="summary-row"><span>Shipping</span><span>${shipping===0?'<span style="color:var(--low);font-weight:700">Free</span>':'₹'+shipping}</span></div>
+        <div class="summary-row total"><span>Total</span><span class="val">₹${total.toLocaleString('en-IN')}</span></div>
+        <button class="checkout-btn" onclick="checkout()">Place Order →</button>
+        ${hasRisk?`<div class="trust-warning" style="display:block">⚠️ One or more items in your cart come from medium or high-risk sellers. Consider replacing them with safer options.</div>`:''}
+        <div class="cart-help"><strong>Free shipping</strong> on orders above ₹50,000. All sellers are trust-scored. Your order details are saved securely.</div>
+      </div>
+    </div>`;
+}
+
+async function checkout(){
+  const cart=getCart();
+  const user=JSON.parse(localStorage.getItem('tm_user')||'{"name":"Guest"}');
+  for(const item of cart){
+    try{
+      await fetch(`${API}/place-order`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({product_id:item.product_id,seller_id:item.seller_id,customer_name:user.name,quantity:1,total_price:item.price})});
+    } catch(e){}
+  }
+  const orderId='#VD'+Date.now().toString().slice(-6);
+  document.getElementById('orderId').textContent=orderId;
+  document.getElementById('successModal').classList.add('show');
+  localStorage.removeItem('tm_cart');
+}
+
+render();
+</script>
+</body>
+</html>

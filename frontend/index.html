@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Verdant — Shop with Confidence</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700;900&family=Nunito:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<style>
+  :root{
+    --bg:#f5f0e8;--surface:#faf7f2;--card:#fff9f0;
+    --accent:#c17f3e;--accent2:#7c9e6b;--clay:#d4956a;
+    --text:#2c2416;--muted:#8a7a65;--border:#e2d8cc;
+    --low:#7c9e6b;--med:#c17f3e;--high:#b85c4a;
+    --warm1:#e8ddd0;--warm2:#f0e8dc;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{background:var(--bg);font-family:'Nunito',sans-serif;color:var(--text);min-height:100vh;display:flex;overflow:hidden;}
+
+  .left-panel{flex:1;position:relative;display:flex;flex-direction:column;justify-content:center;padding:60px;overflow:hidden;background:linear-gradient(145deg,#ede5d6 0%,#f5ede0 50%,#e8ddd0 100%);}
+  .bg-circles{position:absolute;inset:0;overflow:hidden;pointer-events:none;}
+  .bg-circles span{position:absolute;border-radius:50%;background:rgba(193,127,62,.08);animation:drift 10s ease-in-out infinite;}
+  .bg-circles span:nth-child(1){width:400px;height:400px;top:-100px;right:-100px;animation-delay:0s;}
+  .bg-circles span:nth-child(2){width:250px;height:250px;bottom:80px;left:40px;animation-delay:3s;background:rgba(124,158,107,.08);}
+  .bg-circles span:nth-child(3){width:180px;height:180px;top:200px;right:200px;animation-delay:6s;background:rgba(212,149,106,.06);}
+  @keyframes drift{0%,100%{transform:scale(1) rotate(0deg);}50%{transform:scale(1.1) rotate(5deg);}}
+  .texture-overlay{position:absolute;inset:0;background-image:radial-gradient(circle,rgba(193,127,62,.04) 1px,transparent 1px);background-size:28px 28px;pointer-events:none;}
+  .left-content{position:relative;z-index:1;}
+
+  /* ── BRAND LOGO (unified) ── */
+  .brand{display:flex;align-items:center;gap:14px;margin-bottom:56px;}
+  .brand-icon{width:48px;height:48px;background:linear-gradient(135deg,var(--accent),var(--clay));border-radius:14px;display:grid;place-items:center;font-size:22px;box-shadow:0 4px 16px rgba(193,127,62,.3);}
+  .brand-name{font-family:'Playfair Display',serif;font-size:26px;font-weight:900;color:var(--accent);letter-spacing:-.5px;}
+  .brand-tagline{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-top:2px;font-weight:600;}
+
+  .hero-headline{font-family:'Playfair Display',serif;font-size:clamp(34px,4vw,54px);font-weight:900;line-height:1.15;margin-bottom:20px;color:var(--text);}
+  .hero-headline em{font-style:italic;color:var(--accent);}
+  .hero-sub{font-size:16px;color:var(--muted);line-height:1.75;max-width:420px;font-weight:400;}
+  .trust-pills{display:flex;gap:10px;margin-top:36px;flex-wrap:wrap;}
+  .pill{display:flex;align-items:center;gap:8px;background:rgba(255,255,255,.65);border:1px solid var(--border);border-radius:100px;padding:8px 16px;font-size:13px;backdrop-filter:blur(8px);font-weight:600;color:var(--text);}
+  .pill .dot{width:8px;height:8px;border-radius:50%;}
+  .pill.low .dot{background:var(--low);}
+  .pill.med .dot{background:var(--med);}
+  .pill.hi .dot{background:var(--high);}
+
+  .float-card{position:absolute;background:rgba(255,249,240,.92);border:1px solid var(--border);border-radius:16px;padding:16px 20px;font-size:13px;backdrop-filter:blur(16px);box-shadow:0 8px 32px rgba(44,36,22,.08);animation:float 6s ease-in-out infinite;}
+  .float-card.c1{bottom:100px;left:40px;animation-delay:0s;}
+  .float-card.c2{top:120px;right:50px;animation-delay:2.5s;}
+  .float-card .score{font-family:'Playfair Display',serif;font-size:26px;font-weight:700;color:var(--low);}
+  .float-card .label{color:var(--muted);font-size:11px;margin-top:3px;letter-spacing:.3px;}
+  @keyframes float{0%,100%{transform:translateY(0);}50%{transform:translateY(-10px);}}
+
+  /* ── RIGHT PANEL ── */
+  .right-panel{width:460px;min-height:100vh;background:var(--surface);border-left:1px solid var(--border);display:flex;flex-direction:column;justify-content:center;padding:56px 48px;position:relative;overflow-y:auto;}
+  .right-panel::before{content:'';position:absolute;top:-80px;right:-80px;width:240px;height:240px;background:radial-gradient(circle,rgba(193,127,62,.08) 0%,transparent 70%);border-radius:50%;pointer-events:none;}
+
+  .login-title{font-family:'Playfair Display',serif;font-size:30px;font-weight:700;margin-bottom:6px;color:var(--text);}
+  .login-sub{color:var(--muted);font-size:15px;margin-bottom:36px;font-weight:400;}
+  .demo-badge{background:linear-gradient(135deg,rgba(193,127,62,.08),rgba(124,158,107,.08));border:1px solid rgba(193,127,62,.25);border-radius:12px;padding:14px 18px;font-size:13px;color:var(--muted);margin-bottom:28px;line-height:1.7;}
+  .demo-badge strong{color:var(--accent);}
+
+  .form-group{margin-bottom:18px;}
+  .form-label{display:block;font-size:12px;font-weight:700;color:var(--muted);margin-bottom:8px;letter-spacing:.8px;text-transform:uppercase;}
+  .form-input{width:100%;background:var(--card);border:1.5px solid var(--border);border-radius:12px;padding:13px 16px;font-size:15px;color:var(--text);font-family:'Nunito',sans-serif;outline:none;transition:border-color .2s,box-shadow .2s;}
+  .form-input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(193,127,62,.12);}
+  .form-input::placeholder{color:var(--border);}
+  .btn-login{width:100%;background:linear-gradient(135deg,var(--accent),var(--clay));border:none;border-radius:12px;padding:15px;font-size:15px;font-weight:700;font-family:'Nunito',sans-serif;color:#fff;cursor:pointer;transition:transform .15s,box-shadow .2s;margin-top:8px;letter-spacing:.3px;box-shadow:0 4px 16px rgba(193,127,62,.3);}
+  .btn-login:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(193,127,62,.4);}
+  .btn-login:active{transform:translateY(0);}
+  .divider{display:flex;align-items:center;gap:12px;margin:20px 0;color:var(--muted);font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;}
+  .divider::before,.divider::after{content:'';flex:1;height:1px;background:var(--border);}
+  .btn-guest{width:100%;background:transparent;border:1.5px solid var(--border);border-radius:12px;padding:13px;font-size:14px;font-weight:600;font-family:'Nunito',sans-serif;color:var(--text);cursor:pointer;transition:background .2s,border-color .2s;}
+  .btn-guest:hover{background:var(--warm2);border-color:var(--accent);}
+  .error-msg{color:var(--high);font-size:12px;font-weight:600;margin-top:-10px;margin-bottom:10px;display:none;}
+  .help-section{margin-top:28px;background:var(--warm2);border:1px solid var(--border);border-radius:12px;padding:16px 18px;font-size:13px;color:var(--muted);line-height:1.7;}
+  .help-title{font-weight:700;color:var(--text);font-size:12px;text-transform:uppercase;letter-spacing:.8px;margin-bottom:8px;display:flex;align-items:center;gap:6px;}
+</style>
+</head>
+<body>
+
+<div class="left-panel">
+  <div class="bg-circles"><span></span><span></span><span></span></div>
+  <div class="texture-overlay"></div>
+  <div class="float-card c1">
+    <div class="score">92%</div>
+    <div class="label">Trust Score · TechZone Official</div>
+  </div>
+  <div class="float-card c2">
+    <div class="score" style="color:var(--high)">31%</div>
+    <div class="label">High Risk · Unverified Seller</div>
+  </div>
+  <div class="left-content">
+    <div class="brand">
+      <div class="brand-icon">🌿</div>
+      <div>
+        <div class="brand-name">Verdant</div>
+        <div class="brand-tagline">Trusted Marketplace</div>
+      </div>
+    </div>
+    <div class="hero-headline">Shop wisely.<br/>Know <em>who</em> you<br/>can trust.</div>
+    <p class="hero-sub">Our trust engine scores every seller using ratings, return rates, complaints, and listing history — so every purchase is a confident one.</p>
+    <div class="trust-pills">
+      <div class="pill low"><div class="dot"></div>Safe Sellers</div>
+      <div class="pill med"><div class="dot"></div>Moderate Risk</div>
+      <div class="pill hi"><div class="dot"></div>High Risk Alert</div>
+    </div>
+  </div>
+</div>
+
+<div class="right-panel">
+  <div class="login-title">Welcome back 👋</div>
+  <div class="login-sub">Sign in to your Verdant account to start shopping</div>
+  <div class="demo-badge">🔑 <strong>Try the demo:</strong><br/>Username: <strong>demo</strong> &nbsp;·&nbsp; Password: <strong>demo123</strong></div>
+  <div class="form-group">
+    <label class="form-label">Username</label>
+    <input id="username" class="form-input" type="text" placeholder="Enter your username"/>
+  </div>
+  <p id="err-user" class="error-msg">⚠ Please enter your username</p>
+  <div class="form-group">
+    <label class="form-label">Password</label>
+    <input id="password" class="form-input" type="password" placeholder="Enter your password"/>
+  </div>
+  <p id="err-pass" class="error-msg">⚠ Incorrect password — try demo123</p>
+  <button class="btn-login" onclick="handleLogin()">Sign In →</button>
+  <div class="divider">or</div>
+  <button class="btn-guest" onclick="guestLogin()">🚀 &nbsp;Browse as Guest (no login needed)</button>
+  <div class="help-section">
+    <div class="help-title">ℹ️ What is Verdant?</div>
+    Verdant analyses every seller before you buy. Each seller gets a <strong>Trust Score</strong> (0–100%) based on customer ratings, complaint history, and return rates. Higher score = safer to buy from. Look for the 🟢 Safe badge for the best picks.
+  </div>
+</div>
+
+<script>
+  function handleLogin(){
+    const u=document.getElementById('username').value.trim();
+    const p=document.getElementById('password').value.trim();
+    document.getElementById('err-user').style.display='none';
+    document.getElementById('err-pass').style.display='none';
+    if(!u){document.getElementById('err-user').style.display='block';return;}
+    if(u==='demo'&&p==='demo123'){
+      localStorage.setItem('tm_user',JSON.stringify({name:'Demo User',username:'demo'}));
+      window.location.href='marketplace.html';
+    } else {
+      document.getElementById('err-pass').style.display='block';
+    }
+  }
+  function guestLogin(){
+    localStorage.setItem('tm_user',JSON.stringify({name:'Guest',username:'guest'}));
+    window.location.href='marketplace.html';
+  }
+  document.addEventListener('keydown',e=>{if(e.key==='Enter')handleLogin();});
+  if(localStorage.getItem('tm_user'))window.location.href='marketplace.html';
+</script>
+</body>
+</html>

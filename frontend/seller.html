@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Verdant — Seller Profile</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700;900&family=Nunito:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+  :root{--bg:#f5f0e8;--surface:#faf7f2;--card:#fff9f0;--accent:#c17f3e;--clay:#d4956a;--text:#2c2416;--muted:#8a7a65;--border:#e2d8cc;--low:#7c9e6b;--med:#c17f3e;--high:#b85c4a;--warm1:#e8ddd0;--warm2:#f0e8dc;--gold:#c17f3e;}
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{background:var(--bg);font-family:'Nunito',sans-serif;color:var(--text);}
+
+  nav{position:sticky;top:0;z-index:100;background:rgba(245,240,232,.92);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);padding:0 32px;display:flex;align-items:center;gap:16px;height:64px;box-shadow:0 1px 0 var(--border);}
+  .nav-brand{font-family:'Playfair Display',serif;font-size:22px;font-weight:900;text-decoration:none;color:var(--accent);display:flex;align-items:center;gap:8px;letter-spacing:-.3px;}
+  .nav-brand .icon{width:34px;height:34px;background:linear-gradient(135deg,var(--accent),var(--clay));border-radius:9px;display:grid;place-items:center;font-size:17px;box-shadow:0 2px 8px rgba(193,127,62,.3);}
+  .back-btn{background:var(--card);border:1.5px solid var(--border);border-radius:10px;padding:8px 16px;font-size:14px;cursor:pointer;color:var(--text);text-decoration:none;transition:border-color .2s;margin-left:auto;font-weight:600;}
+  .back-btn:hover{border-color:var(--accent);}
+
+  .seller-banner{background:linear-gradient(145deg,#ede5d6,#f5ede0);border-bottom:1px solid var(--border);padding:44px 32px;display:grid;grid-template-columns:auto 1fr;gap:32px;align-items:center;position:relative;overflow:hidden;}
+  .seller-banner::before{content:'';position:absolute;inset:0;background-image:radial-gradient(circle,rgba(193,127,62,.04) 1px,transparent 1px);background-size:28px 28px;pointer-events:none;}
+  .seller-avatar{width:96px;height:96px;border-radius:20px;background:linear-gradient(135deg,var(--accent),var(--clay));display:grid;place-items:center;font-family:'Playfair Display',serif;font-size:38px;font-weight:900;color:#fff;position:relative;z-index:1;flex-shrink:0;box-shadow:0 6px 20px rgba(193,127,62,.3);}
+  .seller-banner-info{position:relative;z-index:1;}
+  .seller-banner-name{font-family:'Playfair Display',serif;font-size:30px;font-weight:900;margin-bottom:8px;color:var(--text);}
+  .seller-meta{display:flex;gap:20px;flex-wrap:wrap;color:var(--muted);font-size:13px;margin-bottom:16px;font-weight:500;}
+  .seller-stat-pills{display:flex;gap:12px;flex-wrap:wrap;}
+  .stat-pill{background:var(--card);border:1.5px solid var(--border);border-radius:10px;padding:10px 18px;text-align:center;}
+  .stat-pill .val{font-family:'Playfair Display',serif;font-size:20px;font-weight:700;color:var(--accent);}
+  .stat-pill .lbl{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;font-weight:700;}
+
+  .seller-help{background:linear-gradient(135deg,rgba(124,158,107,.06),rgba(193,127,62,.04));border-bottom:1px solid var(--border);padding:14px 32px;font-size:13px;color:var(--muted);display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+  .seller-help strong{color:var(--text);}
+
+  .main{padding:36px 32px;display:grid;grid-template-columns:1fr 340px;gap:28px;}
+  .section-hdr{font-family:'Playfair Display',serif;font-size:18px;font-weight:700;margin-bottom:14px;color:var(--text);}
+
+  .listing-card{background:var(--card);border:1.5px solid var(--border);border-radius:12px;padding:18px;display:flex;gap:16px;align-items:center;margin-bottom:12px;text-decoration:none;color:inherit;transition:border-color .2s,box-shadow .2s;}
+  .listing-card:hover{border-color:var(--accent);box-shadow:0 4px 16px rgba(193,127,62,.08);}
+  .listing-img{width:60px;height:60px;border-radius:10px;object-fit:cover;background:var(--warm1);flex-shrink:0;}
+  .listing-name{font-family:'Playfair Display',serif;font-size:14px;font-weight:700;margin-bottom:3px;color:var(--text);}
+  .listing-cat{font-size:11px;color:var(--muted);margin-bottom:4px;text-transform:uppercase;letter-spacing:.5px;font-weight:600;}
+  .listing-price{font-size:15px;font-weight:700;color:var(--accent);}
+  .listing-trust{margin-left:auto;text-align:center;flex-shrink:0;}
+  .mini-score{width:52px;height:52px;border-radius:50%;display:grid;place-items:center;font-family:'Playfair Display',serif;font-size:14px;font-weight:700;border:2px solid;}
+  .mini-label{font-size:9px;color:var(--muted);margin-top:3px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;}
+
+  .chart-box{background:var(--card);border:1.5px solid var(--border);border-radius:16px;padding:22px;margin-bottom:18px;}
+  .chart-box-title{font-family:'Playfair Display',serif;font-size:15px;font-weight:700;margin-bottom:14px;color:var(--text);}
+  .chart-h{position:relative;height:200px;}
+
+  @media(max-width:900px){.main{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+<nav>
+  <a class="nav-brand" href="marketplace.html"><div class="icon">🌿</div>Verdant</a>
+  <a class="back-btn" id="backBtn" href="marketplace.html">← Back</a>
+</nav>
+
+<div class="seller-banner" id="bannerEl">
+  <div class="seller-avatar" id="avatarEl">—</div>
+  <div class="seller-banner-info">
+    <div class="seller-banner-name" id="sellerNameEl">Loading…</div>
+    <div class="seller-meta" id="sellerMetaEl"></div>
+    <div class="seller-stat-pills" id="statPillsEl"></div>
+  </div>
+</div>
+
+<div class="seller-help">
+  📋 <strong>Seller Profile</strong> — This page shows all products listed by this seller along with their individual trust scores. The charts help you spot patterns in their reliability across different products.
+</div>
+
+<div class="main">
+  <div>
+    <div class="section-hdr">📦 Products Listed by This Seller</div>
+    <div id="listingsEl"><div style="color:var(--muted);padding:20px">Loading listings…</div></div>
+  </div>
+  <div>
+    <div class="chart-box">
+      <div class="chart-box-title">📊 Trust Score by Product</div>
+      <div class="chart-h"><canvas id="trustChart"></canvas></div>
+    </div>
+    <div class="chart-box">
+      <div class="chart-box-title">📈 Rating by Product</div>
+      <div class="chart-h"><canvas id="ratingChart"></canvas></div>
+    </div>
+  </div>
+</div>
+
+<script>
+const API='http://localhost:5000';
+const params=new URLSearchParams(location.search);
+const sellerId=parseInt(params.get('id'));
+const refProduct=params.get('ref');
+if(refProduct)document.getElementById('backBtn').href=`product.html?id=${refProduct}`;
+
+async function load(){
+  const sellers=await fetch(API+'/sellers').then(r=>r.json());
+  const seller=sellers.find(s=>s.seller_id===sellerId);
+  if(!seller){document.getElementById('sellerNameEl').textContent='Seller not found';return;}
+  document.getElementById('avatarEl').textContent=seller.seller_name[0];
+  document.getElementById('sellerNameEl').textContent=seller.seller_name;
+  document.getElementById('sellerMetaEl').innerHTML=`
+    <span>📍 ${seller.location}</span>
+    <span>📅 Member since ${seller.joined_date?.slice(0,4)||'N/A'}</span>
+    <span>📧 ${seller.seller_email}</span>
+  `;
+  document.getElementById('statPillsEl').innerHTML=`
+    <div class="stat-pill"><div class="val">${Number(seller.total_sales).toLocaleString('en-IN')}</div><div class="lbl">Total Sales</div></div>
+  `;
+  const products=await fetch(API+'/products').then(r=>r.json());
+  const listingItems=[];
+  for(const p of products){
+    try{
+      const td=await fetch(`${API}/trust-data/${p.product_id}`).then(r=>r.json());
+      const entry=td.sellers?.find(s=>s.seller_id===sellerId);
+      if(entry)listingItems.push({product:p,entry});
+    } catch(e){}
+  }
+  if(!listingItems.length){document.getElementById('listingsEl').innerHTML='<div style="color:var(--muted)">No listings found.</div>';return;}
+  const riskColors={low:'var(--low)',medium:'var(--med)',high:'var(--high)'};
+  document.getElementById('listingsEl').innerHTML=listingItems.map(({product,entry})=>`
+    <a class="listing-card" href="product.html?id=${product.product_id}">
+      <img class="listing-img" src="${product.image_url}" onerror="this.style.display='none'"/>
+      <div style="flex:1">
+        <div class="listing-name">${product.name}</div>
+        <div class="listing-cat">${product.category}</div>
+        <div class="listing-price">₹${entry.price.toLocaleString('en-IN')}</div>
+      </div>
+      <div class="listing-trust">
+        <div class="mini-score" style="border-color:${riskColors[entry.risk_class]};color:${riskColors[entry.risk_class]}">
+          ${(entry.trust_score*100).toFixed(0)}%
+        </div>
+        <div class="mini-label">${entry.risk_level}</div>
+      </div>
+    </a>
+  `).join('');
+  Chart.defaults.color='#8a7a65';Chart.defaults.borderColor='#e2d8cc';
+  const labels=listingItems.map(i=>i.product.name.slice(0,16)+'…');
+  const scores=listingItems.map(i=>+(i.entry.trust_score*100).toFixed(1));
+  const rColors=listingItems.map(i=>riskColors[i.entry.risk_class]);
+  new Chart(document.getElementById('trustChart'),{type:'bar',data:{labels,datasets:[{label:'Trust%',data:scores,backgroundColor:rColors,borderRadius:6,borderSkipped:false}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{min:0,max:100}}}});
+  new Chart(document.getElementById('ratingChart'),{type:'radar',data:{labels,datasets:[{label:'Rating',data:listingItems.map(i=>i.entry.rating),backgroundColor:'rgba(193,127,62,.15)',borderColor:'var(--accent)',pointBackgroundColor:'var(--accent)'}]},options:{responsive:true,maintainAspectRatio:false,scales:{r:{min:0,max:5,ticks:{stepSize:1}}}}});
+}
+
+load();
+</script>
+</body>
+</html>

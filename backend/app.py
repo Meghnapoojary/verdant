@@ -17,7 +17,6 @@ db = mysql.connector.connect(
     user=os.getenv("DB_USER", "root12"),
     password=os.getenv("DB_PASSWORD", "ayaan@1228#$"),
     database=os.getenv("DB_NAME", "trust_system")
-)
 }
 
 def get_db():

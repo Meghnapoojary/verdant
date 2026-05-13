@@ -10,17 +10,18 @@ app = Flask(__name__)
 CORS(app)
 
 # ─────────────────────────────────────────────
-#  DB CONFIG  – update credentials as needed
+#  DB CONFIG – works locally and on Render
 # ─────────────────────────────────────────────
-db = mysql.connector.connect(
-    host=os.getenv("DB_HOST", "localhost"),
-    user=os.getenv("DB_USER", "root12"),
-    password=os.getenv("DB_PASSWORD", "ayaan@1228#$"),
-    database=os.getenv("DB_NAME", "trust_system")
+DB_CONFIG = {
+    "host": os.getenv("DB_HOST", "localhost"),
+    "user": os.getenv("DB_USER", "root12"),
+    "password": os.getenv("DB_PASSWORD", "ayaan@1228#$"),
+    "database": os.getenv("DB_NAME", "trust_system")
 }
 
+
 def get_db():
-    return mysql.connector.connect(**db)
+    return mysql.connector.connect(**DB_CONFIG)
 
 # ──────────────────────────────────────────────
 #  TRUST SCORE ENGINE
@@ -123,7 +124,7 @@ def get_products():
         for k, v in p.items():
             if isinstance(v, (datetime, date)):
                 p[k] = str(v)
-            elif hasattr(v, '__float__'):
+            elif hasattr(v, "__float__"):
                 p[k] = float(v) if v is not None else None
 
     return jsonify(products)
@@ -175,7 +176,10 @@ def get_trust_data(product_id):
         WHERE product_id = %s
         GROUP BY seller_id
     """, (product_id,))
-    complaint_map = {row["seller_id"]: row["complaint_count"] for row in cursor.fetchall()}
+    complaint_map = {
+        row["seller_id"]: row["complaint_count"]
+        for row in cursor.fetchall()
+    }
 
     cursor.close()
     db.close()
@@ -191,7 +195,12 @@ def get_trust_data(product_id):
         complaint_count = complaint_map.get(sid, 0)
         is_earliest     = (sid == earliest_seller_id)
 
-        trust_info = compute_trust(rating, return_rate, complaint_count, is_earliest)
+        trust_info = compute_trust(
+            rating,
+            return_rate,
+            complaint_count,
+            is_earliest
+        )
 
         results.append({
             "listing_id":      l["listing_id"],
@@ -211,7 +220,9 @@ def get_trust_data(product_id):
         })
 
     # Sort: recommended first, then by trust score descending
-    results.sort(key=lambda x: (-int(x["recommended"]), -x["trust_score"]))
+    results.sort(
+        key=lambda x: (-int(x["recommended"]), -x["trust_score"])
+    )
 
     # Mark best seller
     if results:
@@ -233,7 +244,13 @@ def place_order():
     cursor = db.cursor()
 
     cursor.execute("""
-        INSERT INTO orders (product_id, seller_id, customer_name, quantity, total_price)
+        INSERT INTO orders (
+            product_id,
+            seller_id,
+            customer_name,
+            quantity,
+            total_price
+        )
         VALUES (%s, %s, %s, %s, %s)
     """, (
         data.get("product_id"),
@@ -242,12 +259,18 @@ def place_order():
         data.get("quantity", 1),
         data.get("total_price")
     ))
+
     db.commit()
     order_id = cursor.lastrowid
+
     cursor.close()
     db.close()
 
-    return jsonify({"success": True, "order_id": order_id, "message": "Order placed successfully!"})
+    return jsonify({
+        "success": True,
+        "order_id": order_id,
+        "message": "Order placed successfully!"
+    })
 
 
 @app.route("/sellers", methods=["GET"])
@@ -256,12 +279,15 @@ def get_sellers():
     cursor = db.cursor(dictionary=True)
     cursor.execute("SELECT * FROM sellers ORDER BY total_sales DESC")
     sellers = cursor.fetchall()
+
     cursor.close()
     db.close()
+
     for s in sellers:
         for k, v in s.items():
             if isinstance(v, (datetime, date)):
                 s[k] = str(v)
+
     return jsonify(sellers)
 
 

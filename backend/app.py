@@ -3,6 +3,8 @@ from flask_cors import CORS
 import mysql.connector
 from datetime import datetime, date
 import json
+import os
+
 
 app = Flask(__name__)
 CORS(app)
@@ -10,15 +12,16 @@ CORS(app)
 # ─────────────────────────────────────────────
 #  DB CONFIG  – update credentials as needed
 # ─────────────────────────────────────────────
-DB_CONFIG = {
-    "host": "localhost",
-    "user": "root12",
-    "password": "ayaan@1228#$",   # <-- change this
-    "database": "seller_trust_db"
+db = mysql.connector.connect(
+    host=os.getenv("DB_HOST", "localhost"),
+    user=os.getenv("DB_USER", "root12"),
+    password=os.getenv("DB_PASSWORD", "ayaan@1228#$"),
+    database=os.getenv("DB_NAME", "trust_system")
+)
 }
 
 def get_db():
-    return mysql.connector.connect(**DB_CONFIG)
+    return mysql.connector.connect(**db)
 
 # ──────────────────────────────────────────────
 #  TRUST SCORE ENGINE
